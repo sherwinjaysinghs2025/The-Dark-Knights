@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MEDaware • Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <main class="auth-container">
+        <section class="card">
+            <div class="brand">
+                <div class="logo" aria-label="MEDaware logo">💊</div>
+                <h1>MEDaware Dashboard</h1>
+                <p class="subtitle">Monitor medication safety at a glance</p>
+            </div>
+
+            <div id="user-info" class="field" style="margin-top:8px"></div>
+
+            <div class="field" style="margin:16px 0">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                    <div class="card" style="padding:16px">
+                        <div style="font-weight:600;margin-bottom:6px">Interaction Alerts</div>
+                        <div style="color:var(--muted);font-size:14px">No high-risk interactions detected today.</div>
+                    </div>
+                    <div class="card" style="padding:16px">
+                        <div style="font-weight:600;margin-bottom:6px">Adherence</div>
+                        <div style="color:var(--muted);font-size:14px">Estimated adherence: <span style="color:var(--success);font-weight:600">96%</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="signout-btn" class="secondary-btn">Sign out</button>
+        </section>
+        <footer class="footer">Built with Firebase</footer>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVBV58Blk3DUgERNADbx3tREKx7Ux-0zs",
+            authDomain: "medaware-fd462.firebaseapp.com",
+            projectId: "medaware-fd462",
+            storageBucket: "medaware-fd462.firebasestorage.app",
+            messagingSenderId: "873284760937",
+            appId: "1:873284760937:web:2a582e934b1d35b251b9f8",
+            measurementId: "G-3ZFQ9Y19S2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const info = document.getElementById('user-info');
+        const signoutBtn = document.getElementById('signout-btn');
+
+        onAuthStateChanged(auth, (user) => {
+            if(!user){
+                window.location.href = 'index.html';
+                return;
+            }
+            const name = user.displayName || user.email?.split('@')[0] || 'Friend';
+            const email = user.email || '';
+            info.innerHTML = `<div><strong>Welcome, ${name}!</strong></div><div style="color:var(--muted);font-size:14px">${email}</div>`;
+        });
+
+        signoutBtn.addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
+
+
